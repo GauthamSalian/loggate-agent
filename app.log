@@ -1,0 +1,10 @@
+2026-10-19 14:30:00 [INFO] Payment service starting up on port 8080
+2026-10-19 14:30:01 [INFO] Connected to PostgreSQL database at db-master:5432
+2026-10-19 14:30:02 [INFO] Initializing payment gateway handlers: Stripe, PayPal, Razorpay
+2026-10-19 14:30:05 [INFO] Health check endpoint registered at /healthz
+2026-10-19 14:31:12 [INFO] Received checkout request order_id="ord_987654" amount=149.99 currency="USD"
+2026-10-19 14:31:14 [INFO] Payment authorized successfully transaction_id="txn_abc123"
+2026-10-19 14:32:01 [WARN] Slow database query detected duration_ms=450 table="transactions"
+2026-10-19 14:33:15 [ERROR] Failed to send webhook delivery attempt=3 order_id="ord_987654" error="Connection timed out"
+2026-10-19 14:34:00 [INFO] Order completed successfully order_id="ord_987654"
+

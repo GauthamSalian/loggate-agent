@@ -1,0 +1,9 @@
+server_url = "http://localhost:8000/api/v1/ingest"
+access_key = "lg_org_secret_123"
+service = "payment-service"
+host = "prod-web-01"
+environment = "production"
+log_file_path = "./app.log"
+flush_interval_secs = 5
+max_batch_patterns = 500
+max_retry_batches = 50
