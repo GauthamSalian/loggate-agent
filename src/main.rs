@@ -3,6 +3,9 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::time::Duration;
 
+mod models;
+mod processor;
+
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
 struct Config {
@@ -57,6 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if bytes_read > 0 {
             if line.ends_with('\n') {
                 print!("[NEW] {}", line);
+                models::process_and_batch(&line);
                 line.clear(); // Always clear the buffer for the next line
             }
         } else {
@@ -64,9 +68,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::thread::sleep(Duration::from_millis(10));
 
             // If log has been rotated reset the pointer
-            let current_pos = file.stream_position()?;
+            let current_pos = reader.stream_position()?;
             let file_len = reader.get_ref().metadata()?.len();
-            if current_pos < file_len {
+            if current_pos > file_len {
                 reader.seek(SeekFrom::Start(0))?;
                 println!(
                     "Log file rotated/cleared (was at byte {}, file is now {} bytes). Reset pointer to 0.",
@@ -74,5 +78,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
             }
         }
+        println!("{:#?}", models::PATTERN_CACHE);
     }
 }

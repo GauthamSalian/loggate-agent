@@ -1,10 +1,12 @@
-2026-10-19 14:30:00 [INFO] Payment service starting up on port 8080
-2026-10-19 14:30:01 [INFO] Connected to PostgreSQL database at db-master:5432
-2026-10-19 14:30:02 [INFO] Initializing payment gateway handlers: Stripe, PayPal, Razorpay
-2026-10-19 14:30:05 [INFO] Health check endpoint registered at /healthz
-2026-10-19 14:31:12 [INFO] Received checkout request order_id="ord_987654" amount=149.99 currency="USD"
-2026-10-19 14:31:14 [INFO] Payment authorized successfully transaction_id="txn_abc123"
-2026-10-19 14:32:01 [WARN] Slow database query detected duration_ms=450 table="transactions"
-2026-10-19 14:33:15 [ERROR] Failed to send webhook delivery attempt=3 order_id="ord_987654" error="Connection timed out"
-2026-10-19 14:34:00 [INFO] Order completed successfully order_id="ord_987654"
-
+2026-10-20T09:30:00.124Z INFO Starting PaymentGatewayWorker v2.4.1 on instance prod-worker-01
+2026-10-20T09:30:01.405Z INFO Connected to PostgreSQL cluster at 10.0.8.21:5432 with pool_id=pool_01
+2026-10-20T09:30:02.890Z INFO Initialized auth cache at memory address 0x7fa9bc0120
+2026-10-20T09:30:05.112Z INFO HTTP POST /api/v1/checkout from client 192.168.1.45:49152 with trace_id=a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+2026-10-20T09:30:06.331Z INFO Authenticated user email=sarah.connor@cyberdyne.io with Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.sflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+2026-10-20T09:30:07.014Z INFO Processing transaction for order_id=ord_9901 amount=249 currency=USD customer_id=cust_4402
+2026-10-20T09:30:08.520Z INFO Dispatched Stripe charge request using api_key=sk_live_51M0abc0994112345
+2026-10-20T09:30:10.201Z WARN Slow response from external gateway 172.16.254.1:8443 latency_ms=1250ms for session=sess_3391
+2026-10-20T09:30:12.784Z ERROR Failed database replica sync on 10.0.12.99: password=SuperSecretDbPass999! failed handshake
+2026-10-20T09:30:15.912Z INFO Checkout successful transaction_id=e93f77b4-2bc0-4e3a-9642-88ec0c538a71 invoice=inv_8820
+2026-10-20T09:30:18.005Z INFO Webhook dispatch to partner at 198.51.100.22 with token=tok_partner_live_89112
+2026-10-20T09:30:20.441Z ERROR Unhandled memory fault at address 0xdeadbeef001 in thread_id=worker_88
