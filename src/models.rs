@@ -12,6 +12,7 @@ pub struct ReducedRecord {
 }
 
 pub static LOG_LINES_COUNT: LazyLock<Mutex<u64>> = LazyLock::new(|| Mutex::new(0));
+pub static LOG_PATTERN_COUNT: LazyLock<Mutex<u64>> = LazyLock::new(|| Mutex::new(0));
 
 // A global, thread-safe cache that maps a normalized log pattern to its reduced record.
 pub static PATTERN_CACHE: LazyLock<Mutex<HashMap<String, ReducedRecord>>> =
@@ -25,14 +26,17 @@ pub fn process_and_batch(log_line: &str) {
     let mut cache = PATTERN_CACHE.lock().unwrap();
 
     // 3. Fetch existing entry or initialize a new one with the entry API
-    let record = cache
-        .entry(masked_line.clone())
-        .or_insert_with(|| ReducedRecord {
+    let record = cache.entry(masked_line.clone()).or_insert_with(|| {
+        let mut pattern_count = LOG_PATTERN_COUNT.lock().unwrap();
+        *pattern_count += 1;
+
+        ReducedRecord {
             pattern: masked_line,
             sample_lines: Vec::new(),
             raw_line_count: 0,
             bytes_represented: 0,
-        });
+        }
+    });
 
     // 4. Update count and bytes
     let mut line_count = LOG_LINES_COUNT.lock().unwrap();

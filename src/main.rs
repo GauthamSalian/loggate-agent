@@ -1,11 +1,10 @@
 use serde::Deserialize;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 mod models;
 mod processor;
-
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
 struct Config {
@@ -47,6 +46,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         end_pos
     );
 
+    let mut last_flush = Instant::now();
+
     // 4. Wrap file in BufReader to read line-by-line
     let mut reader = BufReader::new(file);
     let mut line = String::new();
@@ -78,6 +79,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
             }
         }
-        println!("{:#?}", models::PATTERN_CACHE);
+
+        let time_is_up = last_flush.elapsed() >= Duration::from_secs(config.flush_interval_secs);
+        let pattern_count = *models::LOG_PATTERN_COUNT.lock().unwrap();
+        let batch_is_full = pattern_count >= config.max_batch_patterns as u64;
+
+        if (time_is_up || batch_is_full) && pattern_count > 0 {
+            // send HashMap content and other important benchmarks to sender.rs after implementation
+            // REPLACE THIS LATER
+            let mut cache = models::PATTERN_CACHE.lock().unwrap();
+            let mut pat_count = models::LOG_PATTERN_COUNT.lock().unwrap();
+            let mut line_count = models::LOG_LINES_COUNT.lock().unwrap();
+
+            println!(
+                "Flushing batch: {} patterns, {} total lines",
+                *pat_count, *line_count
+            );
+
+            cache.clear();
+            *pat_count = 0;
+            *line_count = 0;
+
+            last_flush = Instant::now();
+        }
     }
 }
